@@ -47,13 +47,9 @@ namespace FoodRecipe.API.Controllers
         [HttpPut]
         public async Task<ActionResult<TransactionResponse>> Put(UpdateFoodRecipeRequest request)
         {
-            FoodRecipeModel? foodRecipeModel = await _service.Get(request.Id);
-
-            if (foodRecipeModel is null) return NotFound();
-
             bool result = await _service.Update(_mapper.Map<FoodRecipeModel>(request));
 
-            return Ok(new TransactionResponse(success: result));
+            return result ? Ok(new TransactionResponse(success: result)) : NotFound();
         }
 
         [HttpDelete("{id}")]
