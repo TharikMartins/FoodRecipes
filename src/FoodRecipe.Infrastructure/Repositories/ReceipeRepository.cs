@@ -44,8 +44,11 @@ namespace FoodRecipe.Infrastructure.Repositories
 
         public async Task<bool> Update(FoodRecipeModel model)
         {
+
+            if (await this.Get(model.Id) is null) return false;
+
             _context.FoodRecipe
-                      .Update(model);
+                  .Update(model);
 
             return await _context.SaveChangesAsync() > 0;
         }
@@ -53,9 +56,7 @@ namespace FoodRecipe.Infrastructure.Repositories
         public async Task<bool> Delete(int id)
         {
 
-            FoodRecipeModel? recipe = await _context.FoodRecipe
-                       .Include(x => x.Ingredients)
-                       .FirstOrDefaultAsync(x => x.Id == id);
+            FoodRecipeModel? recipe = await this.Get(id);
 
             if (recipe is null)
                 return false;
